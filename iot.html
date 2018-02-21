@@ -14,9 +14,10 @@
 
 <form class="form-signin" id="CSValidatorForm" method="post">
   <h2 class="form-signin-heading">Validate CSV</h2>
-  <input class="form-control" type="text" required name="conf" id="conf" placeholder="expr1,expr2,expr3,..." size="80">
+  <input class="form-control" type="text" required name="conf" id="conf" placeholder="expr1, expr2 ,expr3, ..." size="80">
+  <input class="form-control" type="text" required name="delimiter" id="delimiter" placeholder="," size="4">
   <button type="reset" value="Reset">Reset</button> <p>
-  <button id="upload">upload</button>    
+  <button id="upload">upload</button>
   <input type="file" name="filename" id="filename">
 </form>
 
@@ -50,14 +51,13 @@ $(document).ready(function(){
     $('#upload').click(function(){
         console.log("document ready");
         var csv = $('#filename');
-        console.log("csv: "+csv);
+        //console.log("csv: "+csv);
         var conf = $('#conf').val();
-        var expr = conf.split(',');
+        var delimiter = $('#delimiter').val();
+        var expr = conf.split(', ');
 
         var csvFile = csv[0].files[0];
         var ext = csv.val().split(".").pop().toLowerCase();
-        console.log("extension file:"+ext);
-        console.log("content file:"+csvFile);
 
         if($.inArray(ext, ["csv"]) === -1){
             alert('upload csv');
@@ -68,7 +68,7 @@ $(document).ready(function(){
             reader.onload = function(e){
                 csvRows = e.target.result.split(/\r|\n|\r\n/);
                 for (var row in csvRows) {
-                   var currentRow = csvRows[row].split(',');
+                   var currentRow = csvRows[row].split(delimiter);
                    for (var item in currentRow) {
                       var currentItem = currentRow[item]; 
                       // Check item with expr[item]
