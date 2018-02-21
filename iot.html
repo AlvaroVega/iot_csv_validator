@@ -7,16 +7,9 @@
 
 <body>
 
-  <!-- <input type="file" name="filename" id="filename"> -->
-  <!-- <button id="upload">upload</button> -->
-  <!-- <div class="csv"></div> -->
-
-
 <form class="form-signin" id="CSValidatorForm" method="post">
   <h2 class="form-signin-heading">Validate CSV</h2>
-  <input class="form-control" type="text" required name="col1" id="col1" placeholder="expr1">
-  <input class="form-control" type="text" required name="col2" id="col2" placeholder="expr2">
-  <input class="form-control" type="text" required name="col3" id="col3" placeholder="expr3">
+  <input class="form-control" type="text" required name="conf" id="conf" placeholder="expr1,expr2,expr3,..." size="80">
   <button type="reset" value="Reset">Reset</button> <p>
   <button id="upload">upload</button>    
   <input type="file" name="filename" id="filename">
@@ -24,8 +17,7 @@
 
 <p>
 
-<div clas="help">
-  <a> Help for regex: </a>
+<div clas="help">Help for regex:
   <ul>
   <li> alphanumeric  ^[a-z0-9]+$ </li>
   <li> numeric  ^[0-9]+$ </li>
@@ -41,22 +33,13 @@
 
 <script type="text/javascript">
   
-$("#CSValidatorForm").submit(function(event) {
-   var cols = [];
-   console.log("CSValidatorForm submit");
-   return false;
-});
-
-
 $(document).ready(function(){
     $('#upload').click(function(){
         console.log("document ready");
         var csv = $('#filename');
         console.log("csv: "+csv);
-        var col1 = $('#col1').val();
-        var col2 = $('#col2').val();
-        var col3 = $('#col3').val();
-        var expr = [col1, col2, col3];
+        var conf = $('#conf').val();
+        var expr = conf.split(',');
 
         var csvFile = csv[0].files[0];
         var ext = csv.val().split(".").pop().toLowerCase();
