@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="http://code.jquery.com/jquery-1.12.4.js"></script>    
+    <title>IOT Platform for SmartCities: CSV validator</title>
+  </head>
+
+<body>
+
+  <!-- <input type="file" name="filename" id="filename"> -->
+  <!-- <button id="upload">upload</button> -->
+  <!-- <div class="csv"></div> -->
+
+
+<form class="form-signin" id="CSValidatorForm" method="post">
+  <h2 class="form-signin-heading">Validate CSV</h2>
+  <input class="form-control" type="text" required name="col1" id="col1" placeholder="expr1">
+  <input class="form-control" type="text" required name="col2" id="col2" placeholder="expr2">
+  <input class="form-control" type="text" required name="col3" id="col3" placeholder="expr3">
+  <button type="reset" value="Reset">Reset</button> <p>
+  <button id="upload">upload</button>    
+  <input type="file" name="filename" id="filename">
+</form>
+
+<p>
+
+<div clas="help">
+  <a> Help for regex: </a>
+  <ul>
+  <li> alphanumeric  ^[a-z0-9]+$ </li>
+  <li> numeric  ^[0-9]+$ </li>
+  <li> alphabetic  ^[a-z]+$ </li>  
+  </ul>
+</div>
+
+
+<div class="csv">CSV
+</div>
+
+<div class="error">ERRORs</div>
+
+
+<script type="text/javascript">
+  
+$("#CSValidatorForm").submit(function(event) {
+   var cols = [];
+   console.log("CSValidatorForm submit");
+   return false;
+});
+
+
+$(document).ready(function(){
+    $('#upload').click(function(){
+        console.log("document ready");
+        var csv = $('#filename');
+        console.log("csv: "+csv);
+        var col1 = $('#col1').val();
+        var col2 = $('#col2').val();
+        var col3 = $('#col3').val();
+        var expr = [col1, col2, col3];
+
+        var csvFile = csv[0].files[0];
+        var ext = csv.val().split(".").pop().toLowerCase();
+        console.log("extension file:"+ext);
+        console.log("content file:"+csvFile);
+
+        if($.inArray(ext, ["csv"]) === -1){
+            alert('upload csv');
+            return false;
+        }
+        if(csvFile != undefined){
+            reader = new FileReader();
+            reader.onload = function(e){
+                csvRows = e.target.result.split(/\r|\n|\r\n/);
+                for (var row in csvRows) {
+                   var currentRow = csvRows[row].split(',');
+                   for (var item in currentRow) {
+                      var currentItem = currentRow[item]; 
+                      // Check item with expr[item]
+                      var regex = new RegExp(expr[item], "i");
+                      if (row > 0 && currentItem.length > 0 && !regex.test(currentItem)) {
+                         $('.error').append("error in row " + row + " item " + item + " : " + currentItem);
+                      }
+                   }
+                   $('.csv').append(csvRows[row]);
+                   $('.csv').append('<p>');
+                } 
+            }
+            reader.readAsText(csvFile);
+        }
+    });
+});
+
+</script>
+
+
+</body>
+</html>
