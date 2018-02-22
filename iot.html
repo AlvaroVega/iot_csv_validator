@@ -14,6 +14,8 @@
 
 <form class="form-signin" id="CSValidatorForm" method="post">
   <h2 class="form-signin-heading">Validate CSV</h2>
+  Provide list of Regexp separeted by ', ' and CSV delimeter column:
+  <p>
   <input class="form-control" type="text" required name="conf" id="conf" placeholder="expr1, expr2 ,expr3, ..." size="80">
   <input class="form-control" type="text" required name="delimiter" id="delimiter" placeholder="," size="4">
   <button type="reset" value="Reset">Reset</button> <p>
@@ -33,9 +35,15 @@
 </div>
 
 
-<div class="csv">CSV: <p></div>
+<div class="csv">CSV: <br></div>
+<table id="myCSV" border="1">
+ <tbody>
+   <tr></tr>
+ </tbody>
+</table>
 
-<div class="error">ERRORS: <p></div>
+<br>
+<div class="error">ERRORS: <br></div>
 
 
 <script type="text/javascript">
@@ -69,17 +77,20 @@ $(document).ready(function(){
                 csvRows = e.target.result.split(/\r|\n|\r\n/);
                 for (var row in csvRows) {
                    var currentRow = csvRows[row].split(delimiter);
+                   var csvEntry = '';
                    for (var item in currentRow) {
                       var currentItem = currentRow[item]; 
                       // Check item with expr[item]
                       var regex = new RegExp(expr[item], "i");
                       if (row > 0 && currentItem.length > 0 && !regex.test(currentItem)) {
-                         $('.error').append("error in row " + row + " item " + item + " : " + currentItem);
+                         $('.error').append("error in row " + row + " item " +
+                                            item + ": " + currentItem);
+                         $('.error').append('<br>');
                       }
+                      csvEntry += '<th>' + currentRow[item] + '</th>';
                    }
-                   $('.csv').append(csvRows[row]);
-                   $('.csv').append('<p>');
-                } 
+                   $('#myCSV tr:last-child').after('<tr>' + csvEntry + '</tr>');
+                }
             }
             reader.readAsText(csvFile);
         }
